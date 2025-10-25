@@ -109,7 +109,7 @@ SMTP_USER=your_email@gmail.com
 SMTP_PASS=your_app_password
 
 # Frontend URL
-CLIENT_URL=http://localhost:3000
+CLIENT_URL=http://localhost:5173
 ```
 
 ## Installation & Setup
