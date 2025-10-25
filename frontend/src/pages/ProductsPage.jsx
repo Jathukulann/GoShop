@@ -44,68 +44,61 @@ const ProductsPage = () => {
   }
 
   return (
-    <div className="container">
-      <div className="products-page">
+    <div className="products-page">
+      <div className="products-page-header">
         <h1>Shop All Products</h1>
-
         <SearchBar onSearch={handleSearch} initialValue={filters.search} />
-
-        <div className="products-layout">
-          <aside className="sidebar">
-            <FilterBar
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onClearFilters={handleClearFilters}
-            />
-          </aside>
-
-          <main className="products-main">
-            {isError && <div className="error-message">{message}</div>}
-
-            <div className="products-header">
-              <p className="results-count">
-                {totalProducts} {totalProducts === 1 ? 'product' : 'products'} found
-              </p>
-            </div>
-
-            {products.length === 0 ? (
-              <div className="no-products">
-                <p>No products found matching your criteria.</p>
-                <button onClick={handleClearFilters}>Clear Filters</button>
-              </div>
-            ) : (
-              <>
-                <div className="products-grid">
-                  {products.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="pagination">
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                    <span className="page-info">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      Next
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </main>
-        </div>
       </div>
+
+      <FilterBar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClearFilters={handleClearFilters}
+      />
+
+      {isError && <div className="error-message">{message}</div>}
+
+      <div className="products-header">
+        <p className="results-count">
+          {totalProducts} {totalProducts === 1 ? 'product' : 'products'} found
+        </p>
+      </div>
+
+      {products.length === 0 ? (
+        <div className="no-products">
+          <p>No products found matching your criteria.</p>
+          <button onClick={handleClearFilters}>Clear Filters</button>
+        </div>
+      ) : (
+        <>
+          <div className="products-grid">
+            {products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pagination">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span className="page-info">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
