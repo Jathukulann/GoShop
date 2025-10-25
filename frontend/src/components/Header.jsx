@@ -19,6 +19,9 @@ const Header = () => {
           <h1>GoShop</h1>
         </Link>
         <nav className="nav">
+          <Link to="/products" className="nav-link">
+            Products
+          </Link>
           {user ? (
             <>
               <span className="user-name">Hello, {user.name}</span>

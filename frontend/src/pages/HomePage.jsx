@@ -1,8 +1,17 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFeaturedProducts } from '../redux/slices/productSlice';
+import ProductCard from '../components/ProductCard';
 
 const HomePage = () => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { featuredProducts, isLoading } = useSelector((state) => state.products);
+
+  useEffect(() => {
+    dispatch(getFeaturedProducts());
+  }, [dispatch]);
 
   return (
     <div className="home-page">
@@ -20,6 +29,41 @@ const HomePage = () => {
             <Link to="/login" className="btn btn-secondary">Login</Link>
           </div>
         )}
+      </div>
+
+      <div className="featured-section">
+        <div className="section-header">
+          <h2>Featured Products</h2>
+          <Link to="/products" className="view-all-link">View All Products →</Link>
+        </div>
+
+        {isLoading ? (
+          <div className="loading">Loading featured products...</div>
+        ) : (
+          <div className="products-grid">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="categories-section">
+        <h2>Shop by Category</h2>
+        <div className="categories-grid">
+          <Link to="/products?category=Men" className="category-card">
+            <h3>Men</h3>
+            <p>Explore men's collection</p>
+          </Link>
+          <Link to="/products?category=Women" className="category-card">
+            <h3>Women</h3>
+            <p>Explore women's collection</p>
+          </Link>
+          <Link to="/products?category=Kids" className="category-card">
+            <h3>Kids</h3>
+            <p>Explore kids' collection</p>
+          </Link>
+        </div>
       </div>
     </div>
   );
