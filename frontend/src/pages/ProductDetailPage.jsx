@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductById, createProductReview, reset, clearProduct } from '../redux/slices/productSlice';
+import { addToCart } from '../redux/slices/cartSlice';
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -9,6 +10,7 @@ const ProductDetailPage = () => {
   const dispatch = useDispatch();
   const { product, isLoading, isError, message } = useSelector((state) => state.products);
   const { user } = useSelector((state) => state.auth);
+  const { isLoading: cartLoading } = useSelector((state) => state.cart);
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -36,9 +38,33 @@ const ProductDetailPage = () => {
     }
   }, [product]);
 
-  const handleAddToCart = () => {
-    // TODO: Implement cart functionality in next phase
-    alert(`Added to cart:\nProduct: ${product.name}\nSize: ${selectedSize}\nColor: ${selectedColor}\nQuantity: ${quantity}`);
+  const handleAddToCart = async () => {
+    if (!selectedSize) {
+      alert('Please select a size');
+      return;
+    }
+
+    if (quantity > product.stock) {
+      alert('Cannot add more than available stock');
+      return;
+    }
+
+    try {
+      await dispatch(
+        addToCart({
+          productId: product._id,
+          size: selectedSize,
+          color: selectedColor,
+          quantity,
+        })
+      ).unwrap();
+
+      alert('Added to cart successfully!');
+      // Optionally navigate to cart
+      // navigate('/cart');
+    } catch (error) {
+      alert(error || 'Failed to add to cart');
+    }
   };
 
   const handleReviewSubmit = (e) => {
@@ -186,9 +212,9 @@ const ProductDetailPage = () => {
             <button
               className="add-to-cart-btn"
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || cartLoading}
             >
-              {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+              {cartLoading ? 'Adding...' : product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
             </button>
           </div>
         </div>

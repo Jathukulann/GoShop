@@ -1,11 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { logout } from '../redux/slices/authSlice';
+import { getCart } from '../redux/slices/cartSlice';
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    dispatch(getCart());
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -20,14 +27,17 @@ const Header = () => {
         </Link>
         <nav className="nav">
           <Link to="/" className="nav-link">
-          Home
-        </Link>
+            Home
+          </Link>
           <Link to="/products" className="nav-link">
             Products
           </Link>
+          <Link to="/cart" className="nav-link cart-link">
+            Cart
+            {cart.totalItems > 0 && <span className="cart-badge">{cart.totalItems}</span>}
+          </Link>
           {user ? (
             <>
-              {/* <span className="user-name">Hello, {user.name}</span> */}
               <Link to="/profile" className="nav-link">
                 Profile
               </Link>
