@@ -15,7 +15,7 @@ const sendOrderConfirmationEmail = async (user, order) => {
             Quantity: ${item.quantity}
           </td>
           <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
-            ₹${item.price.toFixed(2)} × ${item.quantity} = ₹${(item.price * item.quantity).toFixed(2)}
+            $${item.price.toFixed(2)} × ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}
           </td>
         </tr>
       `
@@ -74,19 +74,19 @@ const sendOrderConfirmationEmail = async (user, order) => {
                   ${orderItemsHTML}
                   <tr>
                     <td style="padding: 10px; text-align: right;"><strong>Items Total:</strong></td>
-                    <td style="padding: 10px; text-align: right;"><strong>₹${order.itemsPrice.toFixed(2)}</strong></td>
+                    <td style="padding: 10px; text-align: right;"><strong>$${order.itemsPrice.toFixed(2)}</strong></td>
                   </tr>
                   <tr>
                     <td style="padding: 10px; text-align: right;">Tax:</td>
-                    <td style="padding: 10px; text-align: right;">₹${order.taxPrice.toFixed(2)}</td>
+                    <td style="padding: 10px; text-align: right;">$${order.taxPrice.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td style="padding: 10px; text-align: right;">Shipping:</td>
-                    <td style="padding: 10px; text-align: right;">₹${order.shippingPrice.toFixed(2)}</td>
+                    <td style="padding: 10px; text-align: right;">$${order.shippingPrice.toFixed(2)}</td>
                   </tr>
                   <tr class="total-row">
                     <td style="padding: 15px; text-align: right; font-size: 18px;">Total:</td>
-                    <td style="padding: 15px; text-align: right; font-size: 18px;">₹${order.totalPrice.toFixed(2)}</td>
+                    <td style="padding: 15px; text-align: right; font-size: 18px;">$${order.totalPrice.toFixed(2)}</td>
                   </tr>
                 </tbody>
               </table>

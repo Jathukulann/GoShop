@@ -116,8 +116,8 @@ const OrderConfirmationPage = () => {
                     <p className="item-quantity">Quantity: {item.quantity}</p>
                   </div>
                   <div className="item-price">
-                    <p>₹{item.price.toFixed(2)} × {item.quantity}</p>
-                    <p className="item-total">₹{(item.price * item.quantity).toFixed(2)}</p>
+                    <p>${item.price.toFixed(2)} × {item.quantity}</p>
+                    <p className="item-total">${(item.price * item.quantity).toFixed(2)}</p>
                   </div>
                 </div>
               ))}
@@ -129,24 +129,24 @@ const OrderConfirmationPage = () => {
             <div className="summary-calculations">
               <div className="summary-row">
                 <span>Items Total:</span>
-                <span>₹{currentOrder.itemsPrice.toFixed(2)}</span>
+                <span>${currentOrder.itemsPrice.toFixed(2)}</span>
               </div>
               <div className="summary-row">
                 <span>Shipping:</span>
                 <span>
                   {currentOrder.shippingPrice === 0
                     ? 'FREE'
-                    : `₹${currentOrder.shippingPrice.toFixed(2)}`}
+                    : `$${currentOrder.shippingPrice.toFixed(2)}`}
                 </span>
               </div>
               <div className="summary-row">
                 <span>Tax (GST):</span>
-                <span>₹{currentOrder.taxPrice.toFixed(2)}</span>
+                <span>${currentOrder.taxPrice.toFixed(2)}</span>
               </div>
               <div className="summary-divider"></div>
               <div className="summary-row summary-total">
                 <span>Total Paid:</span>
-                <span>₹{currentOrder.totalPrice.toFixed(2)}</span>
+                <span>${currentOrder.totalPrice.toFixed(2)}</span>
               </div>
             </div>
           </div>

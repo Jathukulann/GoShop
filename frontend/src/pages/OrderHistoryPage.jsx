@@ -77,7 +77,7 @@ const OrderHistoryPage = () => {
                             Size: {item.size} | Qty: {item.quantity}
                           </p>
                         </div>
-                        <p className="item-price">₹{(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="item-price">${(item.price * item.quantity).toFixed(2)}</p>
                       </div>
                     ))}
                     {order.orderItems.length > 3 && (
@@ -88,7 +88,7 @@ const OrderHistoryPage = () => {
                   <div className="order-summary-preview">
                     <div className="summary-item">
                       <span>Total Amount:</span>
-                      <span className="total-amount">₹{order.totalPrice.toFixed(2)}</span>
+                      <span className="total-amount">${order.totalPrice.toFixed(2)}</span>
                     </div>
                     <div className="summary-item">
                       <span>Payment Method:</span>

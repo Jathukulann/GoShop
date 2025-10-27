@@ -211,7 +211,7 @@ const CheckoutPage = () => {
                     </p>
                     <p>Qty: {item.quantity}</p>
                   </div>
-                  <div className="order-item-price">₹{(item.price * item.quantity).toFixed(2)}</div>
+                  <div className="order-item-price">${(item.price * item.quantity).toFixed(2)}</div>
                 </div>
               ))}
             </div>
@@ -219,20 +219,20 @@ const CheckoutPage = () => {
             <div className="order-calculations">
               <div className="calc-row">
                 <span>Items ({cart.totalItems}):</span>
-                <span>₹{itemsPrice.toFixed(2)}</span>
+                <span>${itemsPrice.toFixed(2)}</span>
               </div>
               <div className="calc-row">
                 <span>Shipping:</span>
-                <span>{shippingPrice === 0 ? 'FREE' : `₹${shippingPrice.toFixed(2)}`}</span>
+                <span>{shippingPrice === 0 ? 'FREE' : `$${shippingPrice.toFixed(2)}`}</span>
               </div>
               <div className="calc-row">
                 <span>Tax (18% GST):</span>
-                <span>₹{taxPrice.toFixed(2)}</span>
+                <span>${taxPrice.toFixed(2)}</span>
               </div>
               <div className="calc-divider"></div>
               <div className="calc-row total-row">
                 <span>Total:</span>
-                <span>₹{totalPrice.toFixed(2)}</span>
+                <span>${totalPrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -241,7 +241,7 @@ const CheckoutPage = () => {
             )}
             {shippingPrice > 0 && (
               <div className="shipping-message">
-                Add ₹{(1000 - itemsPrice).toFixed(2)} more to get FREE shipping
+                Add ${(1000 - itemsPrice).toFixed(2)} more to get FREE shipping
               </div>
             )}
           </div>
