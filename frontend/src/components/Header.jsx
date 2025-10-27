@@ -38,6 +38,9 @@ const Header = () => {
           </Link>
           {user ? (
             <>
+              <Link to="/orders" className="nav-link">
+                Orders
+              </Link>
               <Link to="/profile" className="nav-link">
                 Profile
               </Link>

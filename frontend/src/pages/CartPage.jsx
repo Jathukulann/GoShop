@@ -34,8 +34,7 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    // TODO: Implement checkout in next phase
-    alert('Checkout coming soon!');
+    navigate('/checkout');
   };
 
   if (isLoading) {

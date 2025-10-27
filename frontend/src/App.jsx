@@ -8,6 +8,9 @@ import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
+import CheckoutPage from './pages/CheckoutPage';
+import OrderConfirmationPage from './pages/OrderConfirmationPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
@@ -44,6 +47,30 @@ function App() {
               element={
                 <PrivateRoute>
                   <ProfilePage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <PrivateRoute>
+                  <CheckoutPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/order-confirmation/:id"
+              element={
+                <PrivateRoute>
+                  <OrderConfirmationPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <PrivateRoute>
+                  <OrderHistoryPage />
                 </PrivateRoute>
               }
             />

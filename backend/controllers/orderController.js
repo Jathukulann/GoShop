@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const { sendOrderConfirmationEmail } = require('../utils/sendOrderEmail');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -78,6 +79,11 @@ const createOrder = async (req, res) => {
 
     // Clear user's cart
     await Cart.findOneAndDelete({ user: req.user._id });
+
+    // Send order confirmation email (don't await to not block response)
+    sendOrderConfirmationEmail(req.user, order).catch((err) =>
+      console.error('Failed to send order confirmation email:', err)
+    );
 
     res.status(201).json({
       success: true,
