@@ -39,8 +39,12 @@ const ProfilePage = () => {
       setShowMessage('Passwords do not match');
       return;
     }
-    dispatch(updatePassword({ currentPassword: passwordData.currentPassword, newPassword: passwordData.newPassword }));
-    setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+    // Confirmation dialog
+    if (window.confirm('Are you sure you want to change your password?')) {
+      dispatch(updatePassword({ currentPassword: passwordData.currentPassword, newPassword: passwordData.newPassword }));
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    }
   };
 
   const handleAvatarUpload = (e) => {

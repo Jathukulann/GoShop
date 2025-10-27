@@ -196,6 +196,7 @@ const cancelOrder = async (req, res) => {
     }
 
     order.orderStatus = 'Cancelled';
+    order.paymentStatus = 'Failed'; // Mark payment as failed when cancelled
     await order.save();
 
     res.status(200).json({
