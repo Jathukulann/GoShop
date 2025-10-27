@@ -1,4 +1,9 @@
+import { useState, useEffect } from 'react';
+
 const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
+  const [localMinPrice, setLocalMinPrice] = useState(filters.minPrice || '');
+  const [localMaxPrice, setLocalMaxPrice] = useState(filters.maxPrice || '');
+
   const categories = ['Men', 'Women', 'Kids'];
   const subcategories = {
     Men: ['T-Shirts', 'Shirts', 'Jeans', 'Trousers', 'Jackets', 'Sweaters'],
@@ -13,8 +18,29 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
     { value: 'rating', label: 'Top Rated' },
   ];
 
+  // Sync local price state with filters when they're cleared
+  useEffect(() => {
+    setLocalMinPrice(filters.minPrice || '');
+    setLocalMaxPrice(filters.maxPrice || '');
+  }, [filters.minPrice, filters.maxPrice]);
+
   const handleChange = (name, value) => {
     onFilterChange({ [name]: value });
+  };
+
+  const handlePriceChange = (type, value) => {
+    if (type === 'min') {
+      setLocalMinPrice(value);
+    } else {
+      setLocalMaxPrice(value);
+    }
+  };
+
+  const applyPriceFilter = () => {
+    onFilterChange({
+      minPrice: localMinPrice,
+      maxPrice: localMaxPrice,
+    });
   };
 
   const availableSubcategories = filters.category
@@ -78,16 +104,20 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
             <input
               type="number"
               placeholder="Min"
-              value={filters.minPrice}
-              onChange={(e) => handleChange('minPrice', e.target.value)}
+              value={localMinPrice}
+              onChange={(e) => handlePriceChange('min', e.target.value)}
+              onBlur={applyPriceFilter}
+              onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
               min="0"
             />
             <span>-</span>
             <input
               type="number"
               placeholder="Max"
-              value={filters.maxPrice}
-              onChange={(e) => handleChange('maxPrice', e.target.value)}
+              value={localMaxPrice}
+              onChange={(e) => handlePriceChange('max', e.target.value)}
+              onBlur={applyPriceFilter}
+              onKeyDown={(e) => e.key === 'Enter' && applyPriceFilter()}
               min="0"
             />
           </div>
