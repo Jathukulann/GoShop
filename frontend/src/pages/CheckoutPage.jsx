@@ -46,7 +46,7 @@ const CheckoutPage = () => {
 
   // Calculate prices
   const itemsPrice = cart.subtotal || 0;
-  const shippingPrice = itemsPrice > 1000 ? 0 : 50;
+  const shippingPrice = itemsPrice >= 500 ? 0 : 40; // Free shipping on orders ₹500+
   const taxPrice = Number((itemsPrice * 0.18).toFixed(2)); // 18% GST
   const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
@@ -241,7 +241,7 @@ const CheckoutPage = () => {
             )}
             {shippingPrice > 0 && (
               <div className="shipping-message">
-                Add ${(1000 - itemsPrice).toFixed(2)} more to get FREE shipping
+                Add ${(500 - itemsPrice).toFixed(2)} more to get FREE shipping
               </div>
             )}
           </div>

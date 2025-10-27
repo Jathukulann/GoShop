@@ -15,8 +15,10 @@ const Header = () => {
   }, [dispatch]);
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
+    if (window.confirm('Are you sure you want to logout?')) {
+      dispatch(logout());
+      navigate('/login');
+    }
   };
 
   return (
