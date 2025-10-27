@@ -19,9 +19,15 @@ const Header = () => {
           <h1>GoShop</h1>
         </Link>
         <nav className="nav">
+          <Link to="/" className="nav-link">
+          Home
+        </Link>
+          <Link to="/products" className="nav-link">
+            Products
+          </Link>
           {user ? (
             <>
-              <span className="user-name">Hello, {user.name}</span>
+              {/* <span className="user-name">Hello, {user.name}</span> */}
               <Link to="/profile" className="nav-link">
                 Profile
               </Link>
