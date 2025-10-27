@@ -14,7 +14,6 @@ const LoginPage = () => {
   const { sessionId } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    if (isError) setError(message);
     if (isSuccess && user) {
       // Merge guest cart with user cart if there's a guest session
       const handleLoginSuccess = async () => {
@@ -33,12 +32,23 @@ const LoginPage = () => {
       };
       handleLoginSuccess();
     }
+  }, [isSuccess, user, sessionId, dispatch, navigate]);
+
+  useEffect(() => {
+    if (isError && message) {
+      setError(message);
+    }
+  }, [isError, message]);
+
+  useEffect(() => {
     return () => dispatch(reset());
-  }, [isSuccess, user, navigate, dispatch, sessionId, isError, message]);
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    if (error) {
+      setError('');
+    }
   };
 
   const handleSubmit = (e) => {

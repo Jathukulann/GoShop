@@ -16,11 +16,17 @@ const CheckoutPage = () => {
     address: '',
     city: '',
     postalCode: '',
-    country: 'India',
+    country: 'Sri Lanka',
     phone: '',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('Mock');
+  const [paymentMethod, setPaymentMethod] = useState('Card');
+  const [cardDetails, setCardDetails] = useState({
+    cardNumber: '',
+    cardName: '',
+    expiryDate: '',
+    cvv: '',
+  });
 
   useEffect(() => {
     if (!user) {
@@ -44,6 +50,36 @@ const CheckoutPage = () => {
     });
   };
 
+  const handleCardChange = (e) => {
+    let value = e.target.value;
+    const name = e.target.name;
+
+    // Format card number with spaces
+    if (name === 'cardNumber') {
+      value = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+      if (value.length > 19) value = value.substring(0, 19);
+    }
+
+    // Format expiry date
+    if (name === 'expiryDate') {
+      value = value.replace(/\D/g, '');
+      if (value.length >= 2) {
+        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+      }
+      if (value.length > 5) value = value.substring(0, 5);
+    }
+
+    // Limit CVV to 3 digits
+    if (name === 'cvv') {
+      value = value.replace(/\D/g, '').substring(0, 3);
+    }
+
+    setCardDetails({
+      ...cardDetails,
+      [name]: value,
+    });
+  };
+
   // Calculate prices
   const itemsPrice = cart.subtotal || 0;
   const shippingPrice = itemsPrice >= 500 ? 0 : 40; // Free shipping on orders ₹500+
@@ -59,6 +95,22 @@ const CheckoutPage = () => {
       return;
     }
 
+    // Validate card details for Card payment
+    if (paymentMethod === 'Card') {
+      if (!cardDetails.cardNumber || !cardDetails.cardName || !cardDetails.expiryDate || !cardDetails.cvv) {
+        alert('Please fill in all card details');
+        return;
+      }
+      if (cardDetails.cardNumber.replace(/\s/g, '').length !== 16) {
+        alert('Please enter a valid 16-digit card number');
+        return;
+      }
+      if (cardDetails.cvv.length !== 3) {
+        alert('Please enter a valid 3-digit CVV');
+        return;
+      }
+    }
+
     const orderData = {
       orderItems: cart.items.map((item) => ({
         product: item.product._id || item.product,
@@ -70,7 +122,7 @@ const CheckoutPage = () => {
         quantity: item.quantity,
       })),
       shippingAddress,
-      paymentMethod,
+      paymentMethod: paymentMethod === 'Card' ? 'Mock' : paymentMethod, // Treat Card as Mock for backend
       itemsPrice,
       taxPrice,
       shippingPrice,
@@ -171,11 +223,11 @@ const CheckoutPage = () => {
                     <input
                       type="radio"
                       name="paymentMethod"
-                      value="Mock"
-                      checked={paymentMethod === 'Mock'}
+                      value="Card"
+                      checked={paymentMethod === 'Card'}
                       onChange={(e) => setPaymentMethod(e.target.value)}
                     />
-                    <span>Mock Payment (For Testing)</span>
+                    <span>Credit/Debit Card</span>
                   </label>
                   <label className="payment-option">
                     <input
@@ -188,6 +240,61 @@ const CheckoutPage = () => {
                     <span>Cash on Delivery</span>
                   </label>
                 </div>
+
+                {/* Card Details Form */}
+                {paymentMethod === 'Card' && (
+                  <div className="card-details-form">
+                    <div className="form-group">
+                      <label>Card Number *</label>
+                      <input
+                        type="text"
+                        name="cardNumber"
+                        value={cardDetails.cardNumber}
+                        onChange={handleCardChange}
+                        placeholder="1234 5678 9012 3456"
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Cardholder Name *</label>
+                      <input
+                        type="text"
+                        name="cardName"
+                        value={cardDetails.cardName}
+                        onChange={handleCardChange}
+                        placeholder="John Doe"
+                        required
+                      />
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Expiry Date *</label>
+                        <input
+                          type="text"
+                          name="expiryDate"
+                          value={cardDetails.expiryDate}
+                          onChange={handleCardChange}
+                          placeholder="MM/YY"
+                          required
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label>CVV *</label>
+                        <input
+                          type="text"
+                          name="cvv"
+                          value={cardDetails.cvv}
+                          onChange={handleCardChange}
+                          placeholder="123"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button type="submit" className="btn btn-primary btn-block place-order-btn" disabled={isLoading}>

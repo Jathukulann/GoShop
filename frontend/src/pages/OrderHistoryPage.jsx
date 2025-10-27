@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { getMyOrders, reset } from '../redux/slices/orderSlice';
+import { getMyOrders, cancelOrder, reset } from '../redux/slices/orderSlice';
 
 const OrderHistoryPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { orders, isLoading, isError, message } = useSelector((state) => state.order);
+  const { orders, isLoading, isError, isSuccess, message } = useSelector((state) => state.order);
 
   useEffect(() => {
     if (!user) {
@@ -20,6 +20,24 @@ const OrderHistoryPage = () => {
 
     return () => dispatch(reset());
   }, [user, dispatch, navigate]);
+
+  // Refresh orders after successful cancel
+  useEffect(() => {
+    if (isSuccess && message) {
+      dispatch(getMyOrders());
+    }
+  }, [isSuccess, message, dispatch]);
+
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to cancel this order?\n\nNote: No refund will be available for cancelled orders.')) {
+      try {
+        await dispatch(cancelOrder(orderId)).unwrap();
+        alert('Order cancelled successfully!');
+      } catch (error) {
+        alert(`Failed to cancel order: ${error}`);
+      }
+    }
+  };
 
   if (isLoading) {
     return <div className="loading">Loading your orders...</div>;
@@ -102,13 +120,12 @@ const OrderHistoryPage = () => {
                     View Details
                   </Link>
                   {order.orderStatus === 'Processing' && (
-                    <button className="btn btn-outline" onClick={() => {
-                      if (window.confirm('Are you sure you want to cancel this order?')) {
-                        // Will implement cancel functionality
-                        alert('Cancel order feature coming soon!');
-                      }
-                    }}>
-                      Cancel Order
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => handleCancelOrder(order._id)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Cancelling...' : 'Cancel Order'}
                     </button>
                   )}
                 </div>
