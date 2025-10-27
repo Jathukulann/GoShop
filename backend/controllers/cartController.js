@@ -375,8 +375,17 @@ const mergeCart = async (req, res) => {
         // Update quantity
         userCart.items[existingItemIndex].quantity += guestItem.quantity;
       } else {
-        // Add new item
-        userCart.items.push(guestItem);
+        // Add new item - create a plain object without _id to let Mongoose generate a new one
+        userCart.items.push({
+          product: guestItem.product,
+          name: guestItem.name,
+          price: guestItem.price,
+          image: guestItem.image,
+          size: guestItem.size,
+          color: guestItem.color,
+          quantity: guestItem.quantity,
+          stock: guestItem.stock,
+        });
       }
     }
 

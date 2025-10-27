@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { register, reset } from '../redux/slices/authSlice';
+import { mergeCart } from '../redux/slices/cartSlice';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -15,12 +16,26 @@ const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { sessionId } = useSelector((state) => state.cart);
 
   useEffect(() => {
     if (isError) setError(message);
-    if (isSuccess || user) navigate('/profile');
+    if (isSuccess || user) {
+      // Merge guest cart with user cart if there's a guest session
+      const handleRegisterSuccess = async () => {
+        if (sessionId) {
+          try {
+            await dispatch(mergeCart()).unwrap();
+          } catch (error) {
+            console.error('Cart merge failed:', error);
+          }
+        }
+        navigate('/profile');
+      };
+      handleRegisterSuccess();
+    }
     return () => dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch]);
+  }, [user, isError, isSuccess, message, navigate, dispatch, sessionId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

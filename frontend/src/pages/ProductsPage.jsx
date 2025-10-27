@@ -12,7 +12,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     // Fetch products with current filters
-    dispatch(getProducts({ ...filters, page: currentPage, limit: 12 }));
+    dispatch(getProducts({ ...filters, page: currentPage, limit: 10 }));
 
     return () => {
       dispatch(reset());
@@ -32,7 +32,7 @@ const ProductsPage = () => {
   };
 
   const handlePageChange = (page) => {
-    dispatch(getProducts({ ...filters, page, limit: 12 }));
+    dispatch(getProducts({ ...filters, page, limit: 10 }));
   };
 
   if (isLoading) {
