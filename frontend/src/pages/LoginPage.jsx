@@ -6,11 +6,15 @@ import { mergeCart } from '../redux/slices/cartSlice';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
+  // Initialize error from sessionStorage to persist across page reloads
+  const [error, setError] = useState(() => {
+    const savedError = sessionStorage.getItem('loginError');
+    return savedError || '';
+  });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { user, isLoading, isSuccess } = useSelector((state) => state.auth);
   const { sessionId } = useSelector((state) => state.cart);
 
   useEffect(() => {
@@ -19,14 +23,10 @@ const LoginPage = () => {
       const handleLoginSuccess = async () => {
         if (sessionId) {
           try {
-            console.log('Merging cart with sessionId:', sessionId);
             await dispatch(mergeCart()).unwrap();
-            console.log('Cart merge completed successfully');
           } catch (error) {
             console.error('Cart merge failed:', error);
           }
-        } else {
-          console.log('No guest cart to merge');
         }
         navigate('/profile');
       };
@@ -34,24 +34,23 @@ const LoginPage = () => {
     }
   }, [isSuccess, user, sessionId, dispatch, navigate]);
 
+  // Cleanup only on unmount
   useEffect(() => {
-    if (isError && message) {
-      setError(message);
-    }
-  }, [isError, message]);
-
-  useEffect(() => {
-    return () => dispatch(reset());
+    return () => {
+      dispatch(reset());
+      // Don't clear error on unmount - let it persist via sessionStorage
+    };
   }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (error) {
+      sessionStorage.removeItem('loginError'); // Clear from sessionStorage too
       setError('');
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
 
@@ -59,7 +58,15 @@ const LoginPage = () => {
       return setError('Please fill in all fields');
     }
 
-    dispatch(login({ email, password }));
+    // Catch error directly from the promise to avoid useEffect dependency issues
+    try {
+      await dispatch(login({ email, password })).unwrap();
+    } catch (err) {
+      // Store error in sessionStorage to persist across page reloads
+      const errorMessage = err || 'Login failed. Please try again.';
+      sessionStorage.setItem('loginError', errorMessage);
+      setError(errorMessage);
+    }
   };
 
   return (
@@ -67,7 +74,7 @@ const LoginPage = () => {
       <div className="auth-container">
         <h2>Login</h2>
         {error && <div className="alert alert-error">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="form-group">
             <label>Email</label>
             <input
@@ -76,6 +83,7 @@ const LoginPage = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
+              autoComplete="off"
             />
           </div>
           <div className="form-group">
@@ -85,10 +93,22 @@ const LoginPage = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
               placeholder="Enter password"
+              autoComplete="new-password"
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-block" disabled={isLoading}>
+          <button
+            type="button"
+            className="btn btn-primary btn-block"
+            disabled={isLoading}
+            onClick={handleSubmit}
+          >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
