@@ -50,7 +50,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
   return (
     <div className="filter-bar">
       <div className="filter-groups">
-        {/* Category */}
         <div className="filter-group">
           <label>Category</label>
           <select
@@ -66,7 +65,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
           </select>
         </div>
 
-        {/* Subcategory */}
         {filters.category && (
           <div className="filter-group">
             <label>Subcategory</label>
@@ -84,7 +82,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
           </div>
         )}
 
-        {/* Size */}
         <div className="filter-group">
           <label>Size</label>
           <select value={filters.size} onChange={(e) => handleChange('size', e.target.value)}>
@@ -97,7 +94,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
           </select>
         </div>
 
-        {/* Price Range */}
         <div className="filter-group">
           <label>Price Range</label>
           <div className="price-inputs">
@@ -123,7 +119,6 @@ const FilterBar = ({ filters, onFilterChange, onClearFilters }) => {
           </div>
         </div>
 
-        {/* Sort */}
         <div className="filter-group">
           <label>Sort By</label>
           <select value={filters.sort} onChange={(e) => handleChange('sort', e.target.value)}>

@@ -40,18 +40,14 @@ exports.register = async (req, res, next) => {
       password,
     });
 
-    // Send welcome email
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: 'Welcome to GoShop!',
-        html: welcomeEmail(user.name),
-      });
-    } catch (error) {
+    sendEmail({
+      email: user.email,
+      subject: 'Welcome to GoShop!',
+      html: welcomeEmail(user.name),
+    }).catch(error => {
       console.log('Error sending welcome email:', error);
-    }
+    });
 
-    // Send token response
     sendTokenResponse(user, 201, res);
   } catch (error) {
     res.status(500).json({

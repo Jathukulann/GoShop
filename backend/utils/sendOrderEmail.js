@@ -125,7 +125,6 @@ const sendOrderConfirmationEmail = async (user, order) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Order confirmation email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending order confirmation email:', error);
