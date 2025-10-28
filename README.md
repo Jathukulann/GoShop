@@ -227,7 +227,7 @@ After seeding, you can register a new account or use:
 
 ## Contact
 
-For any questions or issues, please contact the developer.
+For any questions or issues, please contact me.
 
 ---
 
