@@ -11,15 +11,18 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: '',
   });
-  const [error, setError] = useState('');
+  // Initialize error from sessionStorage to persist across page reloads
+  const [error, setError] = useState(() => {
+    const savedError = sessionStorage.getItem('registerError');
+    return savedError || '';
+  });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { user, isLoading, isSuccess } = useSelector((state) => state.auth);
   const { sessionId } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    if (isError) setError(message);
     if (isSuccess || user) {
       // Merge guest cart with user cart if there's a guest session
       const handleRegisterSuccess = async () => {
@@ -35,14 +38,17 @@ const RegisterPage = () => {
       handleRegisterSuccess();
     }
     return () => dispatch(reset());
-  }, [user, isError, isSuccess, message, navigate, dispatch, sessionId]);
+  }, [user, isSuccess, navigate, dispatch, sessionId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
+    if (error) {
+      sessionStorage.removeItem('registerError'); // Clear from sessionStorage too
+      setError('');
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
 
@@ -56,7 +62,15 @@ const RegisterPage = () => {
       return setError('Password must be at least 6 characters');
     }
 
-    dispatch(register({ name, email, password }));
+    // Catch error directly from the promise to avoid useEffect dependency issues
+    try {
+      await dispatch(register({ name, email, password })).unwrap();
+    } catch (err) {
+      // Store error in sessionStorage to persist across page reloads
+      const errorMessage = err || 'Registration failed. Please try again.';
+      sessionStorage.setItem('registerError', errorMessage);
+      setError(errorMessage);
+    }
   };
 
   return (
